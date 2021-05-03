@@ -1,0 +1,57 @@
+﻿@model IEnumerable<WebAppECartDemo.ViewModel.ShoppingViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+<script type="text/javascript">
+    function AddToCart(item) {
+        var itemId = $(item).attr("itemid");
+        var formData = new FormData();
+        formData.append("ItemId", itemId);
+
+        $.ajax({
+            async: true,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+            url: '/Shopping/Index',
+            success: function(data) {
+                if (data.Success) {
+                    $("#cartItem").text("Cart(" + data.Counter + ")");
+                }
+            },
+            error: function() {
+                alert("There is some problem.");
+            }
+        });
+    }
+</script>
+<div class="container">
+    <h2 class="text-center">Product List</h2>
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4" style="border: 2px solid black">
+            <div style="text-align: center; border-bottom: 2px solid maroon">
+                <h3>@item.ItemName</h3>
+            </div>
+            <div>
+                <div class="col-md-8">
+                    <img src="@Url.Content(@item.ImagePath)" width="150px" height="150px" />
+                </div>
+                <div class="col-md-4" style="text-align: left">
+                    <b>@item.Description</b>
+                </div>
+            </div>
+
+            <div class="col-md-8" style="font-size: 18px; border-top: 2px solid maroon; padding: 2px">
+                <b>@item.ItemPrice.ToString("#,##0.00 INR")</b>
+            </div>
+            <div class="col-md-4" style="text-align: right; margin-bottom: 10px; border-top: 2px solid maroon; padding: 2px">
+                <input type="button" name="AddToCart" value="Add to Cart" class="btn btn-primary" itemid="@item.ItemId" id="btnAddToCart" onclick="AddToCart(this)" />
+            </div>
+
+        </div>
+    }
+</div>
+
